@@ -1,4 +1,7 @@
-Demonstrates on how to get started on creating your custom object detection model using Tensorflow.
+How to build your custom object detector?
+
+
+The repo demonstrates on how to get started on creating your custom object detection model using Tensorflow.
 For this demo, I am using ssd_mobilenet_v2 as the base model and will train my own class on top of it.
 I have decided to train it on pedestraints using the PascalVOC2007 dataset images of person class.
 
@@ -16,6 +19,17 @@ starting point for many people who are relatively new to Tensorflow object detec
 
 At the end of the demo, you would have created your custom object detector model (trained on custom class), which 
 can be used to make inferences.
+
+### Requirements
+```
+Linux (Tested on CentOS 7)
+Python
+Python Packages
+ - numpy
+ - opencv-python
+ - TensorFlow
+```
+You can use the `pip install <package_name>` command to solve the above python dependencies.
 
 The repo has the direcotry structure as depicted below:
 ```
