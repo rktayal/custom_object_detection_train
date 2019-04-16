@@ -217,6 +217,6 @@ Happy Training!!
 
 ### References
 Much of the content and scripts are taken from below link:
-https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/training.html
-[TensorFlow Model Zoo](https://github.com/tensorflow/models)
+- https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/training.html
+- [TensorFlow Model Zoo](https://github.com/tensorflow/models)
 
