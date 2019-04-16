@@ -1,5 +1,3 @@
-# custom_object_detection_train
-Demonstrates on how to train your model on custom class using tensorflow
 Demonstrates on how to get started on creating your custom object detection model using Tensorflow.
 For this demo, I am using ssd_mobilenet_v2 as the base model and will train my own class on top of it.
 I have decided to train it on  pedestraints using my own set of images.
@@ -16,6 +14,7 @@ Directory Structure is depicted below:
 ```
 training_demo
 ├─ annotations
+├─ scripts
 ├─ images
 │   ├─ test
 │   └─ train
@@ -121,6 +120,50 @@ eval_input_reader {
     input_path: "annotations/test.record"
   }
 }
+(Line 35) batch_norm_trainable:	true
+For ssd mobilenet v2, you could remove "batch_norm_trainable: true" as this field is deprecated now.
+
+```
+
+### Training the model
+Initiate the training process using the following commands
+```
+python train.py --logtostderr --train_dir=training/ --pipeline_config_path=training/pipeline.config
+```
+
+Once the training process has been initiated, you should see a series of print outs similar to the one below (plus/minus some warnings):
+```
+Instructions for updating:
+To construct input pipelines, use the `tf.data` module.
+INFO:tensorflow:depth of additional conv before box predictor: 0
+INFO:tensorflow:depth of additional conv before box predictor: 0
+INFO:tensorflow:depth of additional conv before box predictor: 0
+INFO:tensorflow:depth of additional conv before box predictor: 0
+INFO:tensorflow:depth of additional conv before box predictor: 0
+INFO:tensorflow:depth of additional conv before box predictor: 0
+Please switch to tf.train.MonitoredTrainingSession
+WARNING:tensorflow:From C:\Users\Z003FXH\AppData\Local\Programs\Python\Python35\lib\site-packages\tensorflow\contrib\slim\python\slim\learning.py:737: Supervisor.__init__ (from tensorflow.python.training.supervisor) is deprecated and will be removed in a future version.
+Instructions for updating:
+Please switch to tf.train.MonitoredTrainingSession
+2019-04-16 19:15:35.832117: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2
+INFO:tensorflow:Restoring parameters from pre-trained-models/model.ckpt
+INFO:tensorflow:Restoring parameters from pre-trained-models/model.ckpt
+INFO:tensorflow:Running local_init_op.
+INFO:tensorflow:Running local_init_op.
+INFO:tensorflow:Done running local_init_op.
+INFO:tensorflow:Done running local_init_op.
+INFO:tensorflow:Starting Session.
+INFO:tensorflow:Starting Session.
+INFO:tensorflow:Saving checkpoint to path training/model.ckpt
+INFO:tensorflow:Saving checkpoint to path training/model.ckpt
+INFO:tensorflow:Starting Queues.
+INFO:tensorflow:Starting Queues.
+INFO:tensorflow:global_step/sec: 0
+INFO:tensorflow:global_step/sec: 0
+INFO:tensorflow:Recording summary at step 0.
+INFO:tensorflow:Recording summary at step 0.
+INFO:tensorflow:global step 1: loss = 16.3799 (73.125 sec/step)
+INFO:tensorflow:global step 1: loss = 16.3799 (73.125 sec/step)
 ```
 
 
