@@ -6,26 +6,20 @@ I have decided to train it on pedestraints using the PascalVOC2007 dataset image
 By the way, here is the pedestraint detector in action
 
 
-The post explains all the necessary steps by performing hands-on to train an object detector with your own dataset
-using Tensorflow object detection API.
-
 ### Motivation
 The purpose of writing this is twofolds:
-- To gain better understanding of training a model using TensorFlow object detection API
-- Second, there are pleothera of articles, blogs written on how to perform it, but this repo not only includes the necessary dependencies,
+- First, To gain better understanding of training a model using TensorFlow object detection API
+- Second, The post explains all the necessary steps by performing hands-on to train an object detector with your own dataset. There are pleothera of articles, blogs written on how to perform it, but this repo not only includes the necessary dependencies,
 scripts but also includes the base models and dataset to train on as well (along with the annotations),
-therefore user can create a custom object detector model out of it, by performing the steps described below.
-
-There are many people who wants to create their object detector with their own dataset. This post explains all the 
-necessary steps to train your own detector. It also provides a hands-on on the same, therfore it can be a good
+therefore user can create a custom object detector model out of it, by performing the steps described below without bothering about the dataset. Therfore it can be a good
 starting point for many people who are relatively new to Tensorflow object detection API.
 
 At the end of the demo, you would have created your custom object detector model (trained on custom class), which 
 can be used to make inferences.
 
-Directory Structure is depicted below:
+The repo has the direcotry structure as depicted below:
 ```
-training_demo
+custom_object_detection_train
 ├─ annotations
 ├─ scripts
 ├─ images
@@ -35,11 +29,24 @@ training_demo
 ├─ training
 └─ README.md
 ```
-- `annotations` folder can be used to store all `*.csv` files and respective tensorflow `*.record` files, containing list of annotations for our dataset images
-- `images` directory can contain all images in our dataset, as well as the `*.xml` files, produced for each one using `labelImg` annotation tool
+- `annotations` folder can be used to store all `*.csv` files and respective tensorflow `*.record` files. It also contains the `label_map.pbtxt` file
+which describes the mapping of class id with its name for our model.
+NOTE: TF Object Detection API expects TFRecord file as input during training process
+- `images` directory can contain all images in our dataset, as well as their annotation `*.xml` files. The `xml` files have the PascalVOC format.
 NOTE: `images/train` is used during training, while images in `images/test` will be used to test our final model
 - `pre-trained-model` has the starting checkpoint for our training job. I am using ssd_mobilenet_v2 for this demo
-- `training` directory contains training pipeline configuration file `*.config` as well as `*.pbtxt` label map file
+you can download the `*.tar.gz` file from [here](http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_coco_2018_03_29.tar.gz) and extract the contents in this directory. After extracting, the contents of this direcotry should have the following files.
+   - checkpoint
+   - frozen_inference_graph.pb
+   - model.ckpt.data-00000-of-00001
+   - model.ckpt.index
+   - model.ckpt.meta
+   - pipeline.config
+NOTE: These files will be used during weight initialization for our model.
+- `training` directory will contain the training pipeline configuration file `new_pipeline.config` in our case.
+
+
+If you don't understand much till this point, don't worry, we will see in detail below on how we are generating the required files.
 
 ### Creating the Dataset
 Tensorflow object detection API requires [TFRecord file](https://www.tensorflow.org/api_guides/python/python_io#tfrecords_format_details) format as input, therefore we need to convert our dataset to this file format ultimately.
@@ -51,9 +58,10 @@ After executing the above script, you should have positive samples (both `xml` &
 You can divide these samples into `train` and `test` directory created above. I have put 200 samples into `test` directory. (Both the `*.jpg` & `*.xml`)
 and the rest in the `train` directory.
 Once we have the `*.xml` & `*.jpg` files in `train` and `test` directory, we can move to next step of converting `*.xml` to `*.csv`.
+NOTE: you don't need to execute the above script again as the dataset is already sorted and organized. It is just an FYI.
 #### Converting `*.xml` to `*.csv`
 To do this we can write a simple script that iterates through all `*.xml` files in the `training_demo\images\train` and `training_demo\images\test` folders, and generates a `*.csv` for each of the two.
-script `xml_to_csv.py` does the same.
+script `xml_to_csv.py` inside the `scripts` directory does the same.
 ```
 # Create train data:
 python xml_to_csv.py -i [PATH_TO_IMAGES_FOLDER]/train -o [PATH_TO_ANNOTATIONS_FOLDER]/train_labels.csv
@@ -61,15 +69,15 @@ python xml_to_csv.py -i [PATH_TO_IMAGES_FOLDER]/train -o [PATH_TO_ANNOTATIONS_FO
 # Create test data:
 python xml_to_csv.py -i [PATH_TO_IMAGES_FOLDER]/test -o [PATH_TO_ANNOTATIONS_FOLDER]/test_labels.csv
 
-# For example
-# python xml_to_csv.py -i .\images\train -o .\annotations\train_labels.csv
-# python xml_to_csv.py -i .\images\test -o .\annotations\test_labels.csv
+# For example 
+# python xml_to_csv.py -i ..\images\train -o ..\annotations\train_labels.csv
+# python xml_to_csv.py -i ..\images\test -o ..\annotations\test_labels.csv
 ```
 Once the above script is executed, there should be 2 new files under `.\annotations` folder, named `train_labels.csv` & `test_labels.csv`
 
 #### Converting `*.csv` to `*.record`
 Once we obtain our `*.csv` annotation files, we will need to convert them into TFRecord files.
-`generate_tfrecord.py` converts the csv to tfrecord.
+`generate_tfrecord.py` under `scripts` directory converts the csv to tfrecord.
 
 
 Execute the following commands:
@@ -84,8 +92,8 @@ python generate_tfrecord.py --label=<LABEL> --csv_input=<PATH_TO_ANNOTATIONS_FOL
 --output_path=<PATH_TO_ANNOTATIONS_FOLDER>/test.record
 
 # For Example
-# python generate_tfrecord.py --label=person --csv_input=.\annotations\train_labels.csv --output_path=.\annotations\train.record --img_path=.\images\train
-# python generate_tfrecord.py --label=person --csv_input=.\annotations\test_labels.csv --output_path=.\annotations\test.record --img_path=.\images\test
+# python generate_tfrecord.py --label=person --csv_input=..\annotations\train_labels.csv --output_path=..\annotations\train.record --img_path=..\images\train
+# python generate_tfrecord.py --label=person --csv_input=..\annotations\test_labels.csv --output_path=..\annotations\test.record --img_path=..\images\test
 ```
 Once done, we will have 2 new files in `annotations` folder, named `train.record` and `test.record` respectively.
 
@@ -99,17 +107,19 @@ item {
     name: 'person'
 }
 ```
-Place the file under `annotations` directory
+Place the file under `annotations` directory. (Already present in the repo.)
 
 ### Configuring the Training Pipeline
-For this purpose of tutorial, we will essentially be performing transfer learning using `ssd_mobilenet_v2_coco` as the base model.
+For this demo, we will essentially be performing transfer learning using `ssd_mobilenet_v2_coco` as the base model.
 You can also choose other models listed in [Tensorflow's detection model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md)
 We will be needing the configuration file as well as the latest pre-trained NN for the model we wish to use. Both can be downloaded by simply
 clicking on the name of the desired model in the table found in [TensorFlow's detection model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md#coco-trained-models-coco-models)
 Clicking on the name of your model should initiate a download for a `*.tar.gz` file.
-Once downloaded, extract the contents into `pre-trained-model` using any decompression tool (WinZip, 7Zip)
+Once downloaded, extract the contents into `pre-trained-model` using any decompression tool (WinZip, 7Zip) (Ignore if already done.)
 Now that we have downloaded and extracted, let's make changes to `*.config` file
 
+
+`new_pipeline.config` file under `training` directory has the following changes:
 ```
 Line No. 3 num_classes: 90 needs to be changed as per your classes.
 In this case num_classes: 1
@@ -146,7 +156,7 @@ set PYTHONPATH=%PYTHONPATH%;[PATH_TO_REPO]\slim
 ```
 Initiate the training process using the following commands
 ```
-python train.py --logtostderr --train_dir=training/ --pipeline_config_path=training/pipeline.config
+python train.py --logtostderr --train_dir=training/ --pipeline_config_path=training/new_pipeline.config
 ```
 
 Once the training process has been initiated, you should see a series of print outs similar to the one below (plus/minus some warnings):
@@ -187,17 +197,21 @@ INFO:tensorflow:global step 1: loss = 16.3799 (73.125 sec/step)
 If you observe similar logs take a moment to acknowledge yourself. You have successfully started your first training job.
 As the iterations go on, `TotalLoss` will reduce, ideally it should be somewhere close to 1.
 The convergence of model will depend on several hyperparameters such as `Optimizer` chosen, `learning rate`, `momentum` etc.
-More on this later, you can find good resources online on how to finetune the hyperparameters for improving the accuracy of the model and 
+For now, we have chosen the default values present in the `ssd_mobilenet_v2` config pipeline for the same.
+You can find good resources online on how to finetune the hyperparameters for improving the accuracy of the model and 
 reducing the training time as well. Lower `TotalLoss` is better, however very low `TotalLoss` should be avoided, as the model may end up 
 overfitting the dataset, meaning it will perform poorly when applied to real life data. To visually monitor the loss curve, you can have a look
 at [Monitor Training Job Progress using TensorBoard](https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/training.html#tensorboard-sec)
+You can stop the training explicitly by pressing `ctrl+c` when `TotalLoss` comes down under 2.
 
 ### Exporting the trained inference graph
-Once your training job is complete, you need to extract the newly trained inference graph, which will be later used to perform the object detection. This can be done
+Once your training job is complete, you need to extract the newly trained inference graph, which can be used to perform the object detection. This can be done
 by executing the following cmd:
 ```
 python export_inference_graph.py --input_type image_tensor --pipeline_config_path training/new_pipeline.config --trained_checkpoint_prefix training/model.ckpt-13302 --output_directory ./output_inference_graph_v1.pb
 ```
+`input_type` value should match to what is mentioned in the pipeline configuration (`image_tensor` in this case)
+`trained_checkpoint_prefix` value can be the checkpoint model generated during training under the `training` directory
 Once exported, you can use the model for inferences.
 Happy Training!!
 
