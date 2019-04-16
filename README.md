@@ -1,14 +1,27 @@
 Demonstrates on how to get started on creating your custom object detection model using Tensorflow.
 For this demo, I am using ssd_mobilenet_v2 as the base model and will train my own class on top of it.
-I have decided to train it on  pedestraints using my own set of images.
+I have decided to train it on pedestraints using the PascalVOC2007 dataset images of person class.
 
 
 By the way, here is the pedestraint detector in action
 
 
-The post explains all the necessary steps to train an object detector with your own dataset
+The post explains all the necessary steps by performing hands-on to train an object detector with your own dataset
 using Tensorflow object detection API.
 
+### Motivation
+The purpose of writing this is twofolds:
+- To gain better understanding of training a model using TensorFlow object detection API
+- Second, there are pleothera of articles, blogs written on how to perform it, but this repo not only includes the necessary dependencies,
+scripts but also includes the base models and dataset to train on as well (along with the annotations),
+therefore user can create a custom object detector model out of it, by performing the steps described below.
+
+There are many people who wants to create their object detector with their own dataset. This post explains all the 
+necessary steps to train your own detector. It also provides a hands-on on the same, therfore it can be a good
+starting point for many people who are relatively new to Tensorflow object detection API.
+
+At the end of the demo, you would have created your custom object detector model (trained on custom class), which 
+can be used to make inferences.
 
 Directory Structure is depicted below:
 ```
@@ -126,6 +139,11 @@ For ssd mobilenet v2, you could remove "batch_norm_trainable: true" as this fiel
 ```
 
 ### Training the model
+Set the PYTHONPATH variable to include the `slim` path
+```
+set PYTHONPATH=%PYTHONPATH%;[PATH_TO_REPO]\slim
+# example set PYTHONPATH=%PYTHONPATH%;C:\Users\Z003FXH\personal\custom_object_detection_train\slim
+```
 Initiate the training process using the following commands
 ```
 python train.py --logtostderr --train_dir=training/ --pipeline_config_path=training/pipeline.config
@@ -166,4 +184,25 @@ INFO:tensorflow:global step 1: loss = 16.3799 (73.125 sec/step)
 INFO:tensorflow:global step 1: loss = 16.3799 (73.125 sec/step)
 ```
 
+If you observe similar logs take a moment to acknowledge yourself. You have successfully started your first training job.
+As the iterations go on, `TotalLoss` will reduce, ideally it should be somewhere close to 1.
+The convergence of model will depend on several hyperparameters such as `Optimizer` chosen, `learning rate`, `momentum` etc.
+More on this later, you can find good resources online on how to finetune the hyperparameters for improving the accuracy of the model and 
+reducing the training time as well. Lower `TotalLoss` is better, however very low `TotalLoss` should be avoided, as the model may end up 
+overfitting the dataset, meaning it will perform poorly when applied to real life data. To visually monitor the loss curve, you can have a look
+at [Monitor Training Job Progress using TensorBoard](https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/training.html#tensorboard-sec)
+
+### Exporting the trained inference graph
+Once your training job is complete, you need to extract the newly trained inference graph, which will be later used to perform the object detection. This can be done
+by executing the following cmd:
+```
+python export_inference_graph.py --input_type image_tensor --pipeline_config_path training/new_pipeline.config --trained_checkpoint_prefix training/model.ckpt-13302 --output_directory ./output_inference_graph_v1.pb
+```
+Once exported, you can use the model for inferences.
+Happy Training!!
+
+### References
+Much of the content and scripts are taken from below link:
+https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/training.html
+[TensorFlow Model Zoo](https://github.com/tensorflow/models)
 
