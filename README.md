@@ -221,6 +221,8 @@ overfitting the dataset, meaning it will perform poorly when applied to real lif
 at [Monitor Training Job Progress using TensorBoard](https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/training.html#tensorboard-sec)
 You can stop the training explicitly by pressing `ctrl+c` when `TotalLoss` comes down under 2.
 
+On the sidenote, you will achieve decent results for such a short training time due to the fact that the detector is trained on a single class only. For more classes, total mAP won’t be as good as the one that I got and definitely longer training time would be needed to get good results. There is a also the tradeoff between model speed and model accuracy that one must consider. However that is a different story and should be fine for now.
+
 ### Exporting the trained inference graph
 Once your training job is complete, you need to extract the newly trained inference graph, which can be used to perform the object detection. This can be done
 by executing the following cmd:
