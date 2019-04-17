@@ -229,6 +229,12 @@ python export_inference_graph.py --input_type image_tensor --pipeline_config_pat
 Once exported, you can use the model for inferences.
 Happy Training!!
 
+### Common Issues
+- [AttributeError: module 'object_detection.protos.input_reader_pb2' has no attribute 'NUMERICAL_MASKS'](https://github.com/tensorflow/models/issues/3933)
+  - You need to rebuild the protobufs
+- [ImportError: No module named nets](https://github.com/tensorflow/models/issues/1842) The `slim` directory should be appended to PYTHONPATH to fix it.
+  - ```export PYTHONPATH=$PYTHONPATH:pwd:pwd/slim```
+
 ### References
 Much of the content and scripts are taken from below link:
 - https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/training.html
