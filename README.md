@@ -63,7 +63,10 @@ NOTE: These files will be used during weight initialization for our model.
 If you don't understand much till this point, don't worry, we will see in detail below on how we are generating the required files.
 
 ### Creating the Dataset
-Tensorflow object detection API requires [TFRecord file](https://www.tensorflow.org/api_guides/python/python_io#tfrecords_format_details) format as input, therefore we need to convert our dataset to this file format ultimately.
+Tensorflow object detection API requires [TFRecord file](https://www.tensorflow.org/api_guides/python/python_io#tfrecords_format_details) format as input, therefore we need to convert our dataset to this file format ultimately. There are other ways to get data into your model like using the `feed_dict` cmd or using the 
+`tf.data.Dataset` object, but for now, we will stick to `TfRecords`. If you want to read more, this [article](https://towardsdatascience.com/how-to-quickly-build-a-tensorflow-training-pipeline-15e9ae4d78a0) covers it nicely.
+
+
 For this demo, I am using PascalVOC2007 person dataset images. I have written a script `segregate.py` to segregate all the postive samples of a particular class(person in this case) from the dataset.
 ```
 python segregate.py <path_to_annotations_dir> <path_to_img_dir> <output_dir_path>
