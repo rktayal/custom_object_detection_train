@@ -57,8 +57,8 @@ you can download the `*.tar.gz` file from [here](http://download.tensorflow.org/
    - model.ckpt.meta
    - pipeline.config
 NOTE: These files will be used during weight initialization for our model.
-- `training` directory will contain the training pipeline configuration file.
-NOTE: For our case, we will be using ssd_mobilenet_v2_coco_2018_03_29 pipeline.config file. I have copied it in `training` directory under the name `new_pipeline.config` for this case.
+- `training` directory will contain the training pipeline configuration file. <br />
+NOTE: For our case, we will be using `pipeline.config` file of `ssd_mobilenet_v2_coco_2018_03_29`. I have copied it in `training` directory under the name `new_pipeline.config` for this case.
 
 
 If you don't understand much till this point, don't worry, we will see in detail below on how we are generating the required files.
