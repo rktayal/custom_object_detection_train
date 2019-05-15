@@ -134,7 +134,7 @@ We will be needing the configuration file as well as the latest pre-trained NN f
 clicking on the name of the desired model in the table found in [TensorFlow's detection model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md#coco-trained-models-coco-models)
 Clicking on the name of your model should initiate a download for a `*.tar.gz` file.
 Once downloaded, extract the contents into `pre-trained-model` using any decompression tool (WinZip, 7Zip) (Ignore if already done.)
-Now that we have downloaded and extracted, let's make changes to `*.config` file
+Now that we have downloaded and extracted, let's make changes to `*.config` file. We will be making changes to the `new_pipeline.config` under `training` directory which is identical to the `pipeline.config` extracted in the above step. You can also directory make changes to `pipeline.config` but I feel, its better to preserve the original copy for future refrence.
 
 
 `new_pipeline.config` file under `training` directory has the following changes:
