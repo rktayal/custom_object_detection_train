@@ -240,6 +240,10 @@ Happy Training!!
   - You need to rebuild the protobufs
 - [ImportError: No module named nets](https://github.com/tensorflow/models/issues/1842) The `slim` directory should be appended to PYTHONPATH to fix it.
   - ```export PYTHONPATH=$PYTHONPATH:pwd:pwd/slim```
+- [google.protobuf.text_format.ParseError: 35:7 : Message type "object_detection.protos.SsdFeatureExtractor" has no field named "batch_norm_trainable"](https://github.com/tensorflow/models/issues/6717) Search `batch_norm_trainable: true` in your pipeline.config, then remove the line.
+- ImportError: No module named object_detection
+  -```export PYTHONPATH=$PYTHONPATH:pwd/object_detection```
+  The above command must be executed from the top directory of the project i.e. from `custom_object_detection_train`
 
 ### References
 Much of the content and scripts are taken from below link:
