@@ -243,7 +243,7 @@ Happy Training!!
 - [google.protobuf.text_format.ParseError: 35:7 : Message type "object_detection.protos.SsdFeatureExtractor" has no field named "batch_norm_trainable"](https://github.com/tensorflow/models/issues/6717) Search `batch_norm_trainable: true` in your pipeline.config, then remove the line.
 - ImportError: No module named object_detection  
   Set the environment variable PYTHONPATH to point to the `object_detection` directory of the cloned repo. This is typically done something like this
-```export PYTHONPATH=[...]/object_detection```
+  - ```export PYTHONPATH=[...]/object_detection``` <br />
 where [...] should be replaced with the directory where the cloned repo resides.
 
 ### References
